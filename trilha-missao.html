@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trilha da Missão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+  /* =========================================================
+     CONFIGURE AQUI: cores, textos das ações e ícones (emoji)
+     Basta editar o array TOTEMS lá embaixo no bloco de script.
+     ========================================================= */
+
+  :root{
+    --bg: #f6f4ef;
+    --ink: #17161c;
+    --purple: #6c4ab6;
+    --purple-soft: #efe9fb;
+    --teal: #1f978d;
+    --teal-soft: #e6f5f3;
+    --paper: #ffffff;
+    --line: #d9d4c8;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    height:100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+  }
+
+  body{
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(0,0,0,0.05) 1px, transparent 0);
+    background-size: 26px 26px;
+  }
+
+  .page{
+    box-sizing: border-box;
+    max-width: 1280px;
+    height: 100vh;
+    min-height: 560px;
+    margin: 0 auto;
+    padding: 3vh 24px 2vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header.hero{
+    text-align:center;
+    margin-bottom: 2vh;
+    flex: 0 0 auto;
+  }
+
+  header.hero .eyebrow{
+    font-family:'Kalam', cursive;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--purple);
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  header.hero h1{
+    font-family:'Kalam', cursive;
+    font-weight:700;
+    font-size: clamp(24px, 3.6vw, 40px);
+    margin: 6px 0 8px;
+    line-height:1.1;
+  }
+
+  header.hero h1 span{
+    position:relative;
+    display:inline-block;
+  }
+  header.hero h1 span::after{
+    content:'';
+    position:absolute;
+    left:-4px; right:-4px; bottom:2px;
+    height: 10px;
+    background: linear-gradient(90deg, var(--purple-soft), var(--teal-soft));
+    z-index:-1;
+    transform: rotate(-1deg);
+  }
+
+  header.hero p{
+    max-width: 620px;
+    margin: 0 auto;
+    color:#5c5a63;
+    font-size: 13px;
+    line-height:1.5;
+  }
+
+  /* ---------- TRILHA (totem) ---------- */
+
+  .totem{
+    position:relative;
+    flex: 1 1 0;
+    min-height: 0;
+    display:flex;
+    flex-direction:column;
+    padding: 1vh 10px 0;
+  }
+
+  .totem-title{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    margin: 0 0 1.5vh 4px;
+    flex: 0 0 auto;
+  }
+
+  .totem-title .dot{
+    width:12px; height:12px; border-radius:50%;
+  }
+
+  .totem-title h2{
+    font-family:'Kalam', cursive;
+    font-size: 22px;
+    margin:0;
+  }
+
+  .totem-title .progress-text{
+    margin-left:auto;
+    font-size: 13px;
+    font-weight:600;
+    color:#8b8894;
+  }
+
+  .track-wrap{
+    position:relative;
+    flex: 1 1 0;
+    min-height: 90px;
+  }
+
+  .track-wrap svg{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+  }
+
+  .track-wrap svg path{
+    fill:none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 9 10;
+  }
+
+  .badge{
+    position:absolute;
+    top:50%;
+    transform: translateY(-50%) rotate(-2deg);
+    background: var(--ink);
+    color:#fff;
+    font-family:'Kalam', cursive;
+    font-weight:700;
+    font-size: 14px;
+    line-height:1.25;
+    text-align:center;
+    padding: 12px 16px;
+    border-radius: 4px;
+    white-space: nowrap;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.15);
+    z-index:3;
+  }
+  .badge.start{ left: -6px; }
+  .badge.end{ right: -6px; }
+  .badge.end.done{
+    background: var(--ink);
+    animation: pop 0.5s ease;
+  }
+  .badge.end.done::before{
+    content:'✓ ';
+  }
+
+  @keyframes pop{
+    0%{ transform: translateY(-50%) rotate(-2deg) scale(0.7); }
+    60%{ transform: translateY(-50%) rotate(-2deg) scale(1.12); }
+    100%{ transform: translateY(-50%) rotate(-2deg) scale(1); }
+  }
+
+  .node{
+    position:absolute;
+    width: 42px; height:42px;
+    transform: translate(-50%,-50%);
+    z-index:4;
+    cursor:pointer;
+    border:none;
+    background:none;
+    padding:0;
+  }
+
+  .node .stone{
+    width:100%; height:100%;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2.5px solid var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size: 16px;
+    font-weight:700;
+    font-family:'Kalam', cursive;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.12);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+  }
+
+  .node:hover .stone{
+    transform: scale(1.1);
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.18);
+  }
+
+  /* todas as casas ficam sempre liberadas — o número do dado físico decide onde parar */
+  .node.done .stone{ color:#fff; }
+  .totem[data-color="purple"] .node.done .stone{ background: var(--purple); border-color: var(--purple); }
+  .totem[data-color="teal"] .node.done .stone{ background: var(--teal); border-color: var(--teal); }
+
+  .node.drop-hover .stone{
+    transform: scale(1.22);
+    box-shadow: 0 0 0 5px rgba(0,0,0,0.08);
+  }
+
+  /* ---------- TOTEM ARRASTÁVEL (peça da dupla) ---------- */
+
+  .piece{
+    position:absolute;
+    width: 52px; height:52px;
+    transform: translate(-50%,-50%);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-family:'Kalam', cursive; font-weight:700; font-size:14px;
+    border:3px solid #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.28);
+    cursor: grab;
+    z-index: 10;
+    touch-action: none;
+    user-select: none;
+    transition: left 0.35s ease, top 0.35s ease, transform 0.15s ease;
+  }
+  .piece.dragging{
+    cursor: grabbing;
+    transition: none;
+    transform: translate(-50%,-50%) scale(1.15);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+  }
+  .totem[data-color="purple"] .piece{ background: var(--purple); }
+  .totem[data-color="teal"] .piece{ background: var(--teal); }
+
+  /* ---------- MODAL ---------- */
+
+  .overlay{
+    position: fixed; inset:0;
+    background: rgba(23,22,28,0.55);
+    display:flex; align-items:center; justify-content:center;
+    padding: 20px;
+    z-index: 50;
+    opacity:0; pointer-events:none;
+    transition: opacity 0.2s ease;
+  }
+  .overlay.open{ opacity:1; pointer-events:all; }
+
+  .modal{
+    background: var(--paper);
+    border-radius: 14px;
+    max-width: 380px;
+    width:100%;
+    padding: 30px 26px 26px;
+    text-align:center;
+    position:relative;
+    transform: translateY(14px) scale(0.96);
+    transition: transform 0.22s ease;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  }
+  .overlay.open .modal{ transform: translateY(0) scale(1); }
+
+  .modal .step-tag{
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:#a9a6ae;
+    margin-bottom: 6px;
+  }
+
+  .modal .icon-circle{
+    width: 84px; height:84px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size: 40px;
+    margin: 6px auto 18px;
+  }
+  .totem-purple-icon{ background: var(--purple-soft); }
+  .totem-teal-icon{ background: var(--teal-soft); }
+
+  .modal h3{
+    font-family:'Kalam', cursive;
+    font-size: 21px;
+    margin: 0 0 10px;
+  }
+
+  .modal p{
+    font-size: 14px;
+    line-height:1.6;
+    color:#57545e;
+    margin: 0 0 22px;
+  }
+
+  .modal button.confirm{
+    border:none;
+    color:#fff;
+    font-family:'Poppins',sans-serif;
+    font-weight:600;
+    font-size: 14px;
+    padding: 12px 26px;
+    border-radius: 999px;
+    cursor:pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+  .modal button.confirm:hover{ transform: translateY(-2px); }
+  .btn-purple{ background: var(--purple); }
+  .btn-teal{ background: var(--teal); }
+
+  .modal .close-x{
+    position:absolute; top:12px; right:14px;
+    border:none; background:none;
+    font-size: 18px; color:#b6b3bb;
+    cursor:pointer;
+  }
+
+  /* ---------- WIN ---------- */
+  .confetti-msg{
+    position: fixed;
+    left:50%; top: 26px;
+    transform: translateX(-50%) translateY(-40px);
+    background: var(--ink);
+    color:#fff;
+    font-family:'Kalam', cursive;
+    font-size:15px;
+    padding: 12px 22px;
+    border-radius: 10px;
+    z-index: 60;
+    opacity:0;
+    transition: all 0.35s ease;
+    white-space:nowrap;
+  }
+  .confetti-msg.show{
+    opacity:1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (max-width: 720px){
+    .page{
+      height: auto;
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+    .totem{ flex: none; }
+    .track-wrap{ min-height: 220px; height: 220px; }
+    .badge{ font-size:11px; padding:9px 10px; }
+    .node{ width:34px; height:34px; }
+    .node .stone{ font-size:13px; }
+    .piece{ width:42px; height:42px; font-size:12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header class="hero">
+    <h1><span>Jogo</span>: Operação R.A.D.A.R.</h1>
+    <p>Jogue o dado físico e arraste o totem da sua dupla até a casa correspondente ao número sorteado. Cada casa revela uma ação diferente.</p>
+  </header>
+
+  <section class="totem" data-color="purple" id="totem-0">
+    <div class="totem-title">
+      <span class="dot" style="background:var(--purple)"></span>
+      <h2>Primeira Dupla:</h2>
+      <span class="progress-text" id="progress-0">0 / 0 reveladas</span>
+    </div>
+    <div class="track-wrap" id="track-0">
+      <svg><path id="path-0"></path></svg>
+      <div class="badge start">PONTO<br>DE PARTIDA</div>
+      <div class="badge end" id="end-badge-0">MISSÃO<br>CUMPRIDA!</div>
+    </div>
+  </section>
+
+  <section class="totem" data-color="teal" id="totem-1">
+    <div class="totem-title">
+      <span class="dot" style="background:var(--teal)"></span>
+      <h2>Segunda Dupla:</h2>
+      <span class="progress-text" id="progress-1">0 / 0 reveladas</span>
+    </div>
+    <div class="track-wrap" id="track-1">
+      <svg><path id="path-1"></path></svg>
+      <div class="badge start">PONTO<br>DE PARTIDA</div>
+      <div class="badge end" id="end-badge-1">MISSÃO<br>CUMPRIDA!</div>
+    </div>
+  </section>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="close-x" id="closeModal">✕</button>
+    <div class="step-tag" id="modalTag">Passo 1</div>
+    <div class="icon-circle" id="modalIconWrap"><span id="modalIcon">🔥</span></div>
+    <h3 id="modalTitle">Título da ação</h3>
+    <p id="modalDesc">Descrição da ação a ser realizada.</p>
+    <button class="confirm" id="modalConfirm">Marcar como feito</button>
+  </div>
+</div>
+
+<div class="confetti-msg" id="winMsg"></div>
+
+<script>
+/* =========================================================
+   EDITE AQUI OS PASSOS DE CADA TOTEM
+   icon: um emoji (ou troque por <img> se preferir imagens)
+   title: título curto exibido na pedra e no modal
+   desc: instrução detalhada da ação
+   ========================================================= */
+const TOTEMS = [
+  {
+    color: 'purple',
+    name: 'Missão Interação',
+    steps: [
+      { icon:'🛎️', title:'Sinais',        desc:'Categorias de Descobertas.' },
+      { icon:'🎙️', title:'Microfone Cruzado',              desc:'⚠️ Façam uma pergunta para outra dupla.' },
+      { icon:'📸', title:'Experiências',                desc:'Categorias de Descobertas.' },
+      { icon:'💭', title:'Sonhos',       desc:'Categorias de Descobertas.' },
+      { icon:'📖', title:'Histórias',  desc:'Categorias de Descobertas.' },
+      { icon:'🗼', title:'Torre de Controle',        desc:'⚠️ Façam uma pergunta para a instrutora.' },
+      { icon:'🤝', title:'Conexões',    desc:'Categorias de Descobertas.' },
+      { icon:'🎙️', title:'Microfone Cruzado',              desc:'⚠️ Façam uma pergunta para outra dupla.' },
+      { icon:'🗼', title:'Torre de Controle',        desc:'⚠️ Façam uma pergunta para a instrutora.' },
+      { icon:'❓', title:'Perguntas',    desc:'Categorias de Descobertas.' },
+      { icon:'💡', title:'Ideias',               desc:'Categorias de Descobertas.' },
+      { icon:'🗼', title:'Torre de Controle',        desc:'⚠️ Façam uma pergunta para a instrutora.' },
+      { icon:'👁️', title:'Perspectivas',       desc:'Categorias de Descobertas.' },
+      { icon:'🎙️', title:'Microfone Cruzado',              desc:'⚠️ Façam uma pergunta para outra dupla.' },
+      { icon:'🛎️', title:'Sinais',        desc:'Categorias de Descobertas.' },
+    ]
+  },
+  {
+    color: 'teal',
+    name: 'Missão Conteúdo',
+    steps: [
+      { icon:'🛎️', title:'Sinais',        desc:'Categorias de Descobertas.' },
+      { icon:'🎙️', title:'Microfone Cruzado',              desc:'⚠️ Façam uma pergunta para outra dupla.' },
+      { icon:'📸', title:'Experiências',                desc:'Categorias de Descobertas.' },
+      { icon:'💭', title:'Sonhos',       desc:'Categorias de Descobertas.' },
+      { icon:'📖', title:'Histórias',  desc:'Categorias de Descobertas.' },
+      { icon:'🗼', title:'Torre de Controle',        desc:'⚠️ Façam uma pergunta para a instrutora.' },
+      { icon:'🤝', title:'Conexões',    desc:'Categorias de Descobertas.' },
+      { icon:'🎙️', title:'Microfone Cruzado',              desc:'⚠️ Façam uma pergunta para outra dupla.' },
+      { icon:'🗼', title:'Torre de Controle',        desc:'⚠️ Façam uma pergunta para a instrutora.' },
+      { icon:'❓', title:'Perguntas',    desc:'Categorias de Descobertas.' },
+      { icon:'💡', title:'Ideias',               desc:'Categorias de Descobertas.' },
+      { icon:'🗼', title:'Torre de Controle',        desc:'⚠️ Façam uma pergunta para a instrutora.' },
+      { icon:'👁️', title:'Perspectivas',       desc:'Categorias de Descobertas.' },
+      { icon:'🎙️', title:'Microfone Cruzado',              desc:'⚠️ Façam uma pergunta para outra dupla.' },
+      { icon:'🛎️', title:'Sinais',        desc:'Categorias de Descobertas.' },
+    ]
+  }
+];
+
+const state = TOTEMS.map(t => ({
+  completed: new Array(t.steps.length).fill(false),
+  currentStep: -1 // -1 = ainda no Ponto de Partida
+}));
+let activeModal = null; // {totemIndex, stepIndex}
+let nodePoints = []; // pontos calculados por totem, para posicionar peça e detectar drop
+
+function buildTotem(totemIndex){
+  const totem = TOTEMS[totemIndex];
+  const track = document.getElementById('track-'+totemIndex);
+  const n = totem.steps.length;
+
+  // remove old nodes/peça (mantém svg + badges)
+  track.querySelectorAll('.node, .piece').forEach(el => el.remove());
+
+  const rect = track.getBoundingClientRect();
+  const trackH = rect.height || 140;
+  const centerY = trackH / 2;
+  const amp = Math.min(trackH * 0.34, 60); // amplitude da onda, com limite
+  const marginX = 12; // % de margem para não colidir com os selos
+  const usableWidth = 100 - marginX*2;
+
+  const points = [];
+
+  for(let i=0;i<n;i++){
+    const t = n === 1 ? 0.5 : i/(n-1);
+    const leftPct = marginX + t*usableWidth;
+    const wave = Math.sin(i*1.05) * amp;
+    const topPx = centerY + wave;
+
+    points.push({leftPct, topPx});
+
+    const btn = document.createElement('button');
+    btn.className = 'node';
+    btn.style.left = leftPct+'%';
+    btn.style.top = topPx+'px';
+    btn.dataset.step = i;
+
+    const stone = document.createElement('div');
+    stone.className = 'stone';
+    stone.textContent = (i+1);
+    btn.appendChild(stone);
+
+    btn.addEventListener('click', () => onNodeClick(totemIndex, i));
+    track.appendChild(btn);
+  }
+
+  nodePoints[totemIndex] = points;
+
+  drawPath(totemIndex, points, track);
+  buildPiece(totemIndex, track, rect);
+  refreshNodeStates(totemIndex);
+}
+
+function drawPath(totemIndex, points, track){
+  const svg = track.querySelector('svg');
+  const path = document.getElementById('path-'+totemIndex);
+  const rect = track.getBoundingClientRect();
+  const w = rect.width || 1000;
+  const h = rect.height || 190;
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+  let d = '';
+  points.forEach((p,i) => {
+    const x = (p.leftPct/100)*w;
+    const y = p.topPx;
+    d += (i===0 ? `M ${x} ${y}` : ` L ${x} ${y}`);
+  });
+  path.setAttribute('d', d);
+  const color = TOTEMS[totemIndex].color === 'purple' ? getCss('--purple') : getCss('--teal');
+  path.setAttribute('stroke', color);
+}
+
+function getCss(varName){
+  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+}
+
+/* ---------- PEÇA ARRASTÁVEL ---------- */
+
+function buildPiece(totemIndex, track, rect){
+  const piece = document.createElement('div');
+  piece.className = 'piece';
+  piece.id = 'piece-'+totemIndex;
+  piece.textContent = totemIndex === 0 ? '👩‍🚀' : '👩‍🚀';
+  track.appendChild(piece);
+  positionPieceAtStart(totemIndex, rect);
+
+  piece.addEventListener('pointerdown', (e) => startDrag(e, totemIndex));
+}
+
+function positionPieceAtStart(totemIndex, rect){
+  const piece = document.getElementById('piece-'+totemIndex);
+  const step = state[totemIndex].currentStep;
+  if(step === -1){
+    // fica sobre o selo de partida
+    piece.style.left = '2%';
+    piece.style.top = ((rect.height||140)/2) + 'px';
+  } else {
+    const p = nodePoints[totemIndex][step];
+    piece.style.left = p.leftPct + '%';
+    piece.style.top = p.topPx + 'px';
+  }
+}
+
+let dragCtx = null;
+
+function startDrag(e, totemIndex){
+  const piece = document.getElementById('piece-'+totemIndex);
+  const track = document.getElementById('track-'+totemIndex);
+  piece.setPointerCapture(e.pointerId);
+  piece.classList.add('dragging');
+  dragCtx = { totemIndex, piece, track };
+  piece.style.left = '';
+  piece.style.top = '';
+  movePieceToClient(e.clientX, e.clientY);
+
+  piece.addEventListener('pointermove', onDragMove);
+  piece.addEventListener('pointerup', onDragEnd);
+  piece.addEventListener('pointercancel', onDragEnd);
+}
+
+function onDragMove(e){
+  if(!dragCtx) return;
+  movePieceToClient(e.clientX, e.clientY);
+  highlightClosestNode(e.clientX, e.clientY);
+}
+
+function movePieceToClient(clientX, clientY){
+  const { track, piece } = dragCtx;
+  const rect = track.getBoundingClientRect();
+  const x = clientX - rect.left;
+  const y = clientY - rect.top;
+  piece.style.left = x + 'px';
+  piece.style.top = y + 'px';
+}
+
+function highlightClosestNode(clientX, clientY){
+  const { totemIndex, track } = dragCtx;
+  let closest = null, closestDist = Infinity;
+  track.querySelectorAll('.node').forEach(btn => {
+    const r = btn.getBoundingClientRect();
+    const cx = r.left + r.width/2;
+    const cy = r.top + r.height/2;
+    const dist = Math.hypot(clientX - cx, clientY - cy);
+    if(dist < closestDist){ closestDist = dist; closest = btn; }
+  });
+  track.querySelectorAll('.node').forEach(btn => btn.classList.remove('drop-hover'));
+  if(closest && closestDist < 70){
+    closest.classList.add('drop-hover');
+  }
+}
+
+function onDragEnd(e){
+  if(!dragCtx) return;
+  const { totemIndex, piece, track } = dragCtx;
+  piece.classList.remove('dragging');
+  piece.removeEventListener('pointermove', onDragMove);
+  piece.removeEventListener('pointerup', onDragEnd);
+  piece.removeEventListener('pointercancel', onDragEnd);
+
+  let closest = null, closestDist = Infinity;
+  track.querySelectorAll('.node').forEach(btn => {
+    const r = btn.getBoundingClientRect();
+    const cx = r.left + r.width/2;
+    const cy = r.top + r.height/2;
+    const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+    if(dist < closestDist){ closestDist = dist; closest = btn; }
+  });
+  track.querySelectorAll('.node').forEach(btn => btn.classList.remove('drop-hover'));
+
+  dragCtx = null;
+
+  if(closest && closestDist < 70){
+    const stepIndex = parseInt(closest.dataset.step, 10);
+    landOnStep(totemIndex, stepIndex);
+  } else {
+    // não soltou perto de nenhuma casa: volta pra posição atual
+    const rect = track.getBoundingClientRect();
+    positionPieceAtStart(totemIndex, rect);
+  }
+}
+
+function landOnStep(totemIndex, stepIndex){
+  state[totemIndex].currentStep = stepIndex;
+  const track = document.getElementById('track-'+totemIndex);
+  const rect = track.getBoundingClientRect();
+  positionPieceAtStart(totemIndex, rect);
+  openModal(totemIndex, stepIndex, state[totemIndex].completed[stepIndex]);
+}
+
+/* ---------- ESTADOS DAS CASAS ---------- */
+
+function refreshNodeStates(totemIndex){
+  const comp = state[totemIndex].completed;
+  const track = document.getElementById('track-'+totemIndex);
+
+  track.querySelectorAll('.node').forEach(btn => {
+    const i = parseInt(btn.dataset.step,10);
+    const stone = btn.querySelector('.stone');
+    btn.classList.toggle('done', comp[i]);
+    stone.textContent = comp[i] ? '✓' : (i+1);
+  });
+
+  const doneCount = comp.filter(Boolean).length;
+  document.getElementById('progress-'+totemIndex).textContent = `${doneCount} / ${comp.length} reveladas`;
+
+  const endBadge = document.getElementById('end-badge-'+totemIndex);
+  if(doneCount === comp.length){
+    if(!endBadge.classList.contains('done')){
+      endBadge.classList.add('done');
+      showWinMessage(TOTEMS[totemIndex].name);
+    }
+  } else {
+    endBadge.classList.remove('done');
+  }
+}
+
+function showWinMessage(name){
+  const el = document.getElementById('winMsg');
+  el.textContent = `🎉 ${name} concluída com sucesso!`;
+  el.classList.add('show');
+  setTimeout(()=> el.classList.remove('show'), 2600);
+}
+
+/* clique direto na casa: também move o totem pra lá (atalho sem arrastar) */
+function onNodeClick(totemIndex, stepIndex){
+  landOnStep(totemIndex, stepIndex);
+}
+
+/* ---------- MODAL ---------- */
+
+function openModal(totemIndex, stepIndex, alreadyDone){
+  activeModal = {totemIndex, stepIndex};
+  const totem = TOTEMS[totemIndex];
+  const step = totem.steps[stepIndex];
+
+  document.getElementById('modalTag').textContent = `Casa ${stepIndex+1} de ${totem.steps.length} · ${totem.name}`;
+  document.getElementById('modalIcon').textContent = step.icon;
+  document.getElementById('modalTitle').textContent = step.title;
+  document.getElementById('modalDesc').textContent = step.desc;
+
+  const iconWrap = document.getElementById('modalIconWrap');
+  iconWrap.className = 'icon-circle ' + (totem.color === 'purple' ? 'totem-purple-icon' : 'totem-teal-icon');
+
+  const confirmBtn = document.getElementById('modalConfirm');
+  confirmBtn.className = 'confirm ' + (totem.color === 'purple' ? 'btn-purple' : 'btn-teal');
+  confirmBtn.textContent = alreadyDone ? 'Concluído ✓' : 'Marcar como feito';
+  confirmBtn.disabled = false;
+
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('overlay').classList.remove('open');
+  activeModal = null;
+}
+
+document.getElementById('closeModal').addEventListener('click', closeModal);
+document.getElementById('overlay').addEventListener('click', (e) => {
+  if(e.target.id === 'overlay') closeModal();
+});
+
+document.getElementById('modalConfirm').addEventListener('click', () => {
+  if(!activeModal) return;
+  const {totemIndex, stepIndex} = activeModal;
+  state[totemIndex].completed[stepIndex] = true;
+  refreshNodeStates(totemIndex);
+  closeModal();
+});
+
+function init(){
+  TOTEMS.forEach((_, i) => buildTotem(i));
+}
+window.addEventListener('load', init);
+window.addEventListener('resize', () => {
+  TOTEMS.forEach((_, i) => buildTotem(i));
+});
+</script>
+</body>
+</html>
