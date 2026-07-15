@@ -3,431 +3,698 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trilha da Missão</title>
+<title>Central de Missões</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-
-  /* =========================================================
-     CONFIGURE AQUI: cores, textos das ações e ícones (emoji)
-     Basta editar o array TOTEMS lá embaixo no bloco de script.
-     ========================================================= */
-
   :root{
     --bg: #f6f4ef;
+  }
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background-color: var(--bg);
+    background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.05) 1px, transparent 0);
+    background-size: 26px 26px;
+    color:#17161c;
+    font-family: 'Poppins', sans-serif;
+    min-height:100vh;
+  }
+
+  /* ---------- view switching ---------- */
+  .view{ display:none; }
+  .view.active{ display:block; }
+
+  .back-btn{
+    position: fixed; top:16px; left:16px; z-index:80;
+    display:inline-flex; align-items:center; gap:6px;
+    background:#fffdf9; border:1px solid #ddd8cb; color:#5c5a63;
+    font-family:'Kalam', cursive; font-weight:600; font-size:12.5px;
+    padding:9px 14px; border-radius:10px; cursor:pointer; transition: all .15s ease;
+    box-shadow: 0 3px 10px rgba(0,0,0,.05);
+  }
+  .back-btn:hover{ border-color:#8b8894; color:#17161c; transform: translateY(-1px); }
+
+  /* =========================================================
+     HOME SCREEN
+     ========================================================= */
+  .home-wrap{ max-width: 920px; margin: 0 auto; padding: 9vh 24px 60px; }
+  .home-eyebrow{
+    display:block; text-align:center; font-family:'Kalam', cursive;
+    color:#6c4ab6; text-transform:uppercase; letter-spacing:.14em; font-size:13px; margin-bottom:10px;
+  }
+  .home-hero h1{
+    font-family:'Kalam', cursive; font-weight:700; text-align:center;
+    font-size: clamp(28px, 5vw, 46px); margin:0 0 12px; line-height:1.1;
+  }
+  .home-hero h1 span{ color:#1f978d; }
+  .home-sub{
+    text-align:center; color:#5c5a63; max-width:520px; margin:0 auto 52px;
+    font-size:14px; line-height:1.65;
+  }
+  .home-cards{ display:grid; grid-template-columns: 1fr 1fr; gap:22px; }
+  @media (max-width: 680px){ .home-cards{ grid-template-columns: 1fr; } }
+
+  .home-card{
+    text-align:left; cursor:pointer; border:1px solid #ddd8cb; background:#fffdf9;
+    border-radius:20px; padding:30px 26px 26px; display:flex; flex-direction:column; gap:10px;
+    position:relative; overflow:hidden; font-family:'Kalam', cursive;
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .home-card::before{
+    content:''; position:absolute; top:0; left:0; right:0; height:5px;
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  }
+  .home-card:hover{ transform: translateY(-4px); box-shadow: 0 16px 34px rgba(0,0,0,.08); border-color: var(--accent1); }
+  .hc-icon{ font-size:34px; line-height:1; }
+  .hc-title{ font-family:'Kalam', cursive; font-weight:700; font-size:22px; color:#17161c; }
+  .hc-desc{ font-size:13.5px; color:#5c5a63; line-height:1.55; }
+  .hc-meta{ font-size:11.5px; color:#a29c8c; font-family:'Kalam', cursive; font-weight:600; letter-spacing:.03em; text-transform:uppercase; }
+  .hc-btn{
+    margin-top:12px; font-family:'Kalam', cursive; font-weight:600; font-size:13px;
+    color: var(--accent1);
+  }
+
+  /* =========================================================
+     BARALHO DE CONEXÕES (scoped under #baralhoScreen)
+     ========================================================= */
+  #baralhoScreen{
+    --panel: #fffdf9;
+    --panel-2: #eeebe2;
+    --line: #ddd8cb;
+    --text: #1e1c17;
+    --text-dim: #6f6a5e;
+    --text-faint: #a29c8c;
+    padding: 28px 18px 60px;
+  }
+  #baralhoScreen .wrap{ max-width: 1440px; margin: 0 auto; }
+
+  #baralhoScreen header.top{
+    display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between;
+    gap:16px; margin: 44px 0 26px;
+  }
+  #baralhoScreen .brand-eyebrow{
+    font-family:'Kalam', cursive; font-size:12px; letter-spacing:.18em;
+    text-transform:uppercase; color: var(--text-faint); margin:0 0 6px;
+  }
+  #baralhoScreen h1{
+    font-family:'Kalam', cursive; font-weight:700; font-size: clamp(26px,4vw,38px);
+    margin:0; line-height:1.05; color: var(--text);
+  }
+  #baralhoScreen h1 span{ color:#8b7cf6; }
+  #baralhoScreen .overview{ text-align:right; font-family:'Kalam', cursive; }
+  #baralhoScreen .overview .num{ font-size: 30px; font-weight:700; }
+  #baralhoScreen .overview .lbl{ font-size: 11px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-faint); }
+  #baralhoScreen .overview-bar{ width:180px; height:6px; border-radius:4px; background:var(--line); overflow:hidden; margin-top:6px; margin-left:auto; }
+  #baralhoScreen .overview-bar > i{ display:block; height:100%; background: linear-gradient(90deg,#8b7cf6,#2dd4bf); transition: width .5s ease; }
+
+  #baralhoScreen .tabs{ display:flex; flex-wrap:nowrap; gap:8px; margin-bottom: 22px; }
+  #baralhoScreen .tab{
+    flex: 1 1 0; min-width: 0;
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    background: var(--panel); border: 1px solid var(--line); color: var(--text-dim);
+    padding: 12px 8px; border-radius: 14px;
+    font-family:'Kalam', cursive; font-weight:600; font-size:13px;
+    cursor:pointer; transition: all .18s ease; white-space:nowrap; overflow:hidden;
+  }
+  #baralhoScreen .tab span{ overflow:hidden; text-overflow:ellipsis; }
+  #baralhoScreen .tab:hover{ border-color: var(--cat-color, #444); color:var(--text); }
+  #baralhoScreen .tab .ic{ font-size:16px; line-height:1; }
+  #baralhoScreen .tab .count{ font-size:11px; color: var(--text-faint); font-family:'Kalam', cursive; font-weight:600; }
+  #baralhoScreen .tab.active{
+    background: color-mix(in srgb, var(--cat-color) 16%, var(--panel));
+    border-color: var(--cat-color); color: var(--text);
+    box-shadow: 0 0 0 1px var(--cat-color) inset;
+  }
+  #baralhoScreen .tab.done .count::after{ content:" ✓"; color: var(--cat-color); }
+
+  #baralhoScreen .panel{ background: var(--panel); border: 1px solid var(--line); border-radius: 22px; padding: 22px 22px 26px; }
+  #baralhoScreen .panel-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom: 20px; }
+  #baralhoScreen .panel-title-row{ display:flex; align-items:center; gap:10px; }
+  #baralhoScreen .cat-ic{
+    width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center;
+    font-size:19px; background: color-mix(in srgb, var(--cat-color) 22%, transparent); border: 1px solid var(--cat-color);
+  }
+  #baralhoScreen .panel-title{ font-family:'Kalam', cursive; font-weight:700; font-size:22px; margin:0; }
+  #baralhoScreen .panel-sub{ color: var(--text-dim); font-size: 13.5px; margin:2px 0 0; }
+  #baralhoScreen .progress-pill{ font-family:'Kalam', cursive; font-weight:600; font-size:12.5px; border-radius:999px; padding: 6px 12px; white-space:nowrap; }
+
+  #baralhoScreen .deck{ display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; }
+  @media (max-width: 460px){ #baralhoScreen .deck{ grid-template-columns: repeat(2, 1fr); } }
+
+  #baralhoScreen .card{ perspective: 1000px; aspect-ratio: 3 / 4; cursor:pointer; }
+  #baralhoScreen .card-inner{ position:relative; width:100%; height:100%; transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2,.8,.25,1); }
+  #baralhoScreen .card.flipped .card-inner{ transform: rotateY(180deg); }
+  #baralhoScreen .card-face{
+    position:absolute; inset:0; backface-visibility: hidden; border-radius:16px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; padding:12px; text-align:center;
+  }
+  #baralhoScreen .card-front{
+    background: repeating-linear-gradient(135deg, transparent 0 8px, rgba(0,0,0,.025) 8px 16px), var(--panel-2);
+    border: 1.5px solid var(--line); position:relative;
+  }
+  #baralhoScreen .card-front .front-ic{ font-size:22px; margin-bottom:8px; opacity:.9; }
+  #baralhoScreen .card-front .front-num{ font-family:'Kalam', cursive; font-weight:700; font-size:13px; color: var(--text-faint); }
+  #baralhoScreen .card:hover .card-front{ border-color: var(--cat-color); }
+  #baralhoScreen .card-back{
+    background: color-mix(in srgb, var(--cat-color) 20%, var(--panel-2));
+    border: 1.5px solid var(--cat-color); transform: rotateY(180deg);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--cat-color) 14%, transparent) inset;
+  }
+  #baralhoScreen .card-back .back-text{ font-family:'Kalam', cursive; font-weight:600; font-size:13.5px; line-height:1.32; color: var(--text); }
+  #baralhoScreen .card-back .back-num{ position:absolute; top:8px; left:10px; font-family:'Kalam', cursive; font-weight:700; font-size:10px; color: var(--text-dim); }
+  #baralhoScreen .card.revealed .card-front::after{
+    content:"✓"; position:absolute; top:8px; right:10px; width:16px; height:16px; border-radius:50%;
+    background: var(--cat-color); color:#12121a; font-size:9px; display:flex; align-items:center; justify-content:center;
+    font-family:'Kalam', cursive; font-weight:700;
+  }
+
+  #baralhoScreen .panel-foot{ display:flex; justify-content:flex-end; gap:10px; margin-top: 22px; }
+  #baralhoScreen .ghost-btn{
+    font-family:'Kalam', cursive; font-weight:600; font-size:12.5px;
+    color: var(--text-faint); background:transparent; border:1px solid var(--line);
+    border-radius:10px; padding:8px 12px; cursor:pointer; transition: all .15s ease;
+  }
+  #baralhoScreen .ghost-btn:hover{ color: var(--text); border-color: var(--text-faint); }
+
+  @media (max-width: 700px){
+    #baralhoScreen .tab{ padding: 10px 4px; gap:3px; }
+    #baralhoScreen .tab .ic{ font-size:15px; }
+    #baralhoScreen .tab .name{ display:none; }
+    #baralhoScreen .tab .count{ font-size:9.5px; }
+  }
+  @media (max-width: 560px){
+    #baralhoScreen .panel{ padding:16px 14px 20px; border-radius:18px; }
+    #baralhoScreen .overview{ text-align:left; }
+    #baralhoScreen .overview-bar{ margin-left:0; }
+    #baralhoScreen header.top{ flex-direction:column; align-items:flex-start; }
+  }
+
+  /* =========================================================
+     TRILHA DA MISSÃO / OPERAÇÃO R.A.D.A.R. (scoped under #trilhaScreen)
+     ========================================================= */
+  #trilhaScreen{
     --ink: #17161c;
     --purple: #6c4ab6;
     --purple-soft: #efe9fb;
     --teal: #1f978d;
     --teal-soft: #e6f5f3;
     --paper: #ffffff;
-    --line: #d9d4c8;
   }
 
-  *{ box-sizing: border-box; }
-
-  html,body{
-    margin:0; padding:0;
-    height:100%;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: 'Poppins', sans-serif;
-    overflow-x: hidden;
+  #trilhaScreen .page{
+    box-sizing: border-box; max-width: 1280px; min-height: 100vh;
+    margin: 0 auto; padding: 3vh 24px 4vh;
+    display: flex; flex-direction: column;
   }
 
-  body{
-    background-image:
-      radial-gradient(circle at 1px 1px, rgba(0,0,0,0.05) 1px, transparent 0);
-    background-size: 26px 26px;
+  #trilhaScreen header.hero{ text-align:center; margin: 40px 0 2vh; flex: 0 0 auto; }
+  #trilhaScreen header.hero .eyebrow{
+    font-family:'Kalam', cursive; font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--purple); display:inline-flex; align-items:center; gap:8px;
   }
+  #trilhaScreen header.hero h1{ font-family:'Kalam', cursive; font-weight:700; font-size: clamp(24px, 3.6vw, 40px); margin: 6px 0 8px; line-height:1.1; }
+  #trilhaScreen header.hero h1 span{ position:relative; display:inline-block; }
+  #trilhaScreen header.hero h1 span::after{
+    content:''; position:absolute; left:-4px; right:-4px; bottom:2px; height: 10px;
+    background: linear-gradient(90deg, var(--purple-soft), var(--teal-soft)); z-index:-1; transform: rotate(-1deg);
+  }
+  #trilhaScreen header.hero p{ max-width: 620px; margin: 0 auto; color:#5c5a63; font-size: 13px; line-height:1.5; }
 
-  .page{
-    box-sizing: border-box;
-    max-width: 1280px;
-    height: 100vh;
-    min-height: 560px;
-    margin: 0 auto;
-    padding: 3vh 24px 2vh;
-    display: flex;
-    flex-direction: column;
-  }
+  #trilhaScreen .totem{ position:relative; flex: 1 1 0; min-height: 220px; display:flex; flex-direction:column; padding: 1vh 10px 0; }
+  #trilhaScreen .totem-title{ display:flex; align-items:center; gap: 10px; margin: 0 0 1.5vh 4px; flex: 0 0 auto; }
+  #trilhaScreen .totem-title .dot{ width:12px; height:12px; border-radius:50%; }
+  #trilhaScreen .totem-title h2{ font-family:'Kalam', cursive; font-size: 22px; margin:0; }
+  #trilhaScreen .totem-title .progress-text{ margin-left:auto; font-size: 13px; font-weight:600; color:#8b8894; }
 
-  header.hero{
-    text-align:center;
-    margin-bottom: 2vh;
-    flex: 0 0 auto;
-  }
+  #trilhaScreen .track-wrap{ position:relative; flex: 1 1 0; min-height: 140px; }
+  #trilhaScreen .track-wrap svg{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+  #trilhaScreen .track-wrap svg path{ fill:none; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 9 10; }
 
-  header.hero .eyebrow{
-    font-family:'Kalam', cursive;
-    font-size: 15px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--purple);
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
+  #trilhaScreen .badge{
+    position:absolute; top:50%; transform: translateY(-50%) rotate(-2deg);
+    background: var(--ink); color:#fff; font-family:'Kalam', cursive; font-weight:700; font-size: 14px;
+    line-height:1.25; text-align:center; padding: 12px 16px; border-radius: 4px; white-space: nowrap;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.15); z-index:3;
   }
+  #trilhaScreen .badge.start{ left: -6px; }
+  #trilhaScreen .badge.end{ right: -6px; }
+  #trilhaScreen .badge.end.done{ background: var(--ink); animation: trilhaPop 0.5s ease; }
+  #trilhaScreen .badge.end.done::before{ content:'✓ '; }
 
-  header.hero h1{
-    font-family:'Kalam', cursive;
-    font-weight:700;
-    font-size: clamp(24px, 3.6vw, 40px);
-    margin: 6px 0 8px;
-    line-height:1.1;
-  }
-
-  header.hero h1 span{
-    position:relative;
-    display:inline-block;
-  }
-  header.hero h1 span::after{
-    content:'';
-    position:absolute;
-    left:-4px; right:-4px; bottom:2px;
-    height: 10px;
-    background: linear-gradient(90deg, var(--purple-soft), var(--teal-soft));
-    z-index:-1;
-    transform: rotate(-1deg);
-  }
-
-  header.hero p{
-    max-width: 620px;
-    margin: 0 auto;
-    color:#5c5a63;
-    font-size: 13px;
-    line-height:1.5;
-  }
-
-  /* ---------- TRILHA (totem) ---------- */
-
-  .totem{
-    position:relative;
-    flex: 1 1 0;
-    min-height: 0;
-    display:flex;
-    flex-direction:column;
-    padding: 1vh 10px 0;
-  }
-
-  .totem-title{
-    display:flex;
-    align-items:center;
-    gap: 10px;
-    margin: 0 0 1.5vh 4px;
-    flex: 0 0 auto;
-  }
-
-  .totem-title .dot{
-    width:12px; height:12px; border-radius:50%;
-  }
-
-  .totem-title h2{
-    font-family:'Kalam', cursive;
-    font-size: 22px;
-    margin:0;
-  }
-
-  .totem-title .progress-text{
-    margin-left:auto;
-    font-size: 13px;
-    font-weight:600;
-    color:#8b8894;
-  }
-
-  .track-wrap{
-    position:relative;
-    flex: 1 1 0;
-    min-height: 90px;
-  }
-
-  .track-wrap svg{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    pointer-events:none;
-  }
-
-  .track-wrap svg path{
-    fill:none;
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-dasharray: 9 10;
-  }
-
-  .badge{
-    position:absolute;
-    top:50%;
-    transform: translateY(-50%) rotate(-2deg);
-    background: var(--ink);
-    color:#fff;
-    font-family:'Kalam', cursive;
-    font-weight:700;
-    font-size: 14px;
-    line-height:1.25;
-    text-align:center;
-    padding: 12px 16px;
-    border-radius: 4px;
-    white-space: nowrap;
-    box-shadow: 3px 3px 0 rgba(0,0,0,0.15);
-    z-index:3;
-  }
-  .badge.start{ left: -6px; }
-  .badge.end{ right: -6px; }
-  .badge.end.done{
-    background: var(--ink);
-    animation: pop 0.5s ease;
-  }
-  .badge.end.done::before{
-    content:'✓ ';
-  }
-
-  @keyframes pop{
+  @keyframes trilhaPop{
     0%{ transform: translateY(-50%) rotate(-2deg) scale(0.7); }
     60%{ transform: translateY(-50%) rotate(-2deg) scale(1.12); }
     100%{ transform: translateY(-50%) rotate(-2deg) scale(1); }
   }
 
-  .node{
-    position:absolute;
-    width: 42px; height:42px;
-    transform: translate(-50%,-50%);
-    z-index:4;
-    cursor:pointer;
-    border:none;
-    background:none;
-    padding:0;
+  #trilhaScreen .node{ position:absolute; width: 42px; height:42px; transform: translate(-50%,-50%); z-index:4; cursor:pointer; border:none; background:none; padding:0; }
+  #trilhaScreen .node .stone{
+    width:100%; height:100%; border-radius: 50%; background: var(--paper); border: 2.5px solid var(--ink);
+    display:flex; align-items:center; justify-content:center; font-size: 16px; font-weight:700; font-family:'Kalam', cursive;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.12); transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
   }
+  #trilhaScreen .node:hover .stone{ transform: scale(1.1); box-shadow: 3px 3px 0 rgba(0,0,0,0.18); }
+  #trilhaScreen .node.done .stone{ color:#fff; }
+  #trilhaScreen .totem[data-color="purple"] .node.done .stone{ background: var(--purple); border-color: var(--purple); }
+  #trilhaScreen .totem[data-color="teal"] .node.done .stone{ background: var(--teal); border-color: var(--teal); }
+  #trilhaScreen .node.drop-hover .stone{ transform: scale(1.22); box-shadow: 0 0 0 5px rgba(0,0,0,0.08); }
 
-  .node .stone{
-    width:100%; height:100%;
-    border-radius: 50%;
-    background: var(--paper);
-    border: 2.5px solid var(--ink);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size: 16px;
-    font-weight:700;
-    font-family:'Kalam', cursive;
-    box-shadow: 2px 2px 0 rgba(0,0,0,0.12);
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+  #trilhaScreen .piece{
+    position:absolute; width: 52px; height:52px; transform: translate(-50%,-50%); border-radius:50%;
+    display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Kalam', cursive; font-weight:700; font-size:14px;
+    border:3px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.28); cursor: grab; z-index: 10;
+    touch-action: none; user-select: none; transition: left 0.35s ease, top 0.35s ease, transform 0.15s ease;
   }
+  #trilhaScreen .piece.dragging{ cursor: grabbing; transition: none; transform: translate(-50%,-50%) scale(1.15); box-shadow: 0 8px 18px rgba(0,0,0,0.35); }
+  #trilhaScreen .totem[data-color="purple"] .piece{ background: var(--purple); }
+  #trilhaScreen .totem[data-color="teal"] .piece{ background: var(--teal); }
 
-  .node:hover .stone{
-    transform: scale(1.1);
-    box-shadow: 3px 3px 0 rgba(0,0,0,0.18);
+  #trilhaScreen .overlay{
+    position: fixed; inset:0; background: rgba(23,22,28,0.55); display:flex; align-items:center; justify-content:center;
+    padding: 20px; z-index: 50; opacity:0; pointer-events:none; transition: opacity 0.2s ease;
   }
-
-  /* todas as casas ficam sempre liberadas — o número do dado físico decide onde parar */
-  .node.done .stone{ color:#fff; }
-  .totem[data-color="purple"] .node.done .stone{ background: var(--purple); border-color: var(--purple); }
-  .totem[data-color="teal"] .node.done .stone{ background: var(--teal); border-color: var(--teal); }
-
-  .node.drop-hover .stone{
-    transform: scale(1.22);
-    box-shadow: 0 0 0 5px rgba(0,0,0,0.08);
-  }
-
-  /* ---------- TOTEM ARRASTÁVEL (peça da dupla) ---------- */
-
-  .piece{
-    position:absolute;
-    width: 52px; height:52px;
-    transform: translate(-50%,-50%);
-    border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    color:#fff; font-family:'Kalam', cursive; font-weight:700; font-size:14px;
-    border:3px solid #fff;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.28);
-    cursor: grab;
-    z-index: 10;
-    touch-action: none;
-    user-select: none;
-    transition: left 0.35s ease, top 0.35s ease, transform 0.15s ease;
-  }
-  .piece.dragging{
-    cursor: grabbing;
-    transition: none;
-    transform: translate(-50%,-50%) scale(1.15);
-    box-shadow: 0 8px 18px rgba(0,0,0,0.35);
-  }
-  .totem[data-color="purple"] .piece{ background: var(--purple); }
-  .totem[data-color="teal"] .piece{ background: var(--teal); }
-
-  /* ---------- MODAL ---------- */
-
-  .overlay{
-    position: fixed; inset:0;
-    background: rgba(23,22,28,0.55);
-    display:flex; align-items:center; justify-content:center;
-    padding: 20px;
-    z-index: 50;
-    opacity:0; pointer-events:none;
-    transition: opacity 0.2s ease;
-  }
-  .overlay.open{ opacity:1; pointer-events:all; }
-
-  .modal{
-    background: var(--paper);
-    border-radius: 14px;
-    max-width: 380px;
-    width:100%;
-    padding: 30px 26px 26px;
-    text-align:center;
-    position:relative;
-    transform: translateY(14px) scale(0.96);
-    transition: transform 0.22s ease;
+  #trilhaScreen .overlay.open{ opacity:1; pointer-events:all; }
+  #trilhaScreen .modal{
+    background: var(--paper); border-radius: 14px; max-width: 380px; width:100%; padding: 30px 26px 26px;
+    text-align:center; position:relative; transform: translateY(14px) scale(0.96); transition: transform 0.22s ease;
     box-shadow: 0 20px 50px rgba(0,0,0,0.25);
   }
-  .overlay.open .modal{ transform: translateY(0) scale(1); }
+  #trilhaScreen .overlay.open .modal{ transform: translateY(0) scale(1); }
+  #trilhaScreen .modal .step-tag{ font-size:12px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:#a9a6ae; margin-bottom: 6px; }
+  #trilhaScreen .modal .icon-circle{ width: 84px; height:84px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size: 40px; margin: 6px auto 18px; }
+  #trilhaScreen .totem-purple-icon{ background: var(--purple-soft); }
+  #trilhaScreen .totem-teal-icon{ background: var(--teal-soft); }
+  #trilhaScreen .modal h3{ font-family:'Kalam', cursive; font-size: 21px; margin: 0 0 10px; }
+  #trilhaScreen .modal p{ font-size: 14px; line-height:1.6; color:#57545e; margin: 0 0 22px; }
+  #trilhaScreen .modal button.confirm{
+    border:none; color:#fff; font-family:'Poppins',sans-serif; font-weight:600; font-size: 14px;
+    padding: 12px 26px; border-radius: 999px; cursor:pointer; transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+  #trilhaScreen .modal button.confirm:hover{ transform: translateY(-2px); }
+  #trilhaScreen .btn-purple{ background: var(--purple); }
+  #trilhaScreen .btn-teal{ background: var(--teal); }
+  #trilhaScreen .modal .close-x{ position:absolute; top:12px; right:14px; border:none; background:none; font-size: 18px; color:#b6b3bb; cursor:pointer; }
 
-  .modal .step-tag{
-    font-size:12px;
-    font-weight:600;
-    letter-spacing:0.06em;
-    text-transform:uppercase;
-    color:#a9a6ae;
-    margin-bottom: 6px;
+  #trilhaScreen .confetti-msg{
+    position: fixed; left:50%; top: 26px; transform: translateX(-50%) translateY(-40px);
+    background: var(--ink); color:#fff; font-family:'Kalam', cursive; font-size:15px;
+    padding: 12px 22px; border-radius: 10px; z-index: 60; opacity:0; transition: all 0.35s ease; white-space:nowrap;
   }
-
-  .modal .icon-circle{
-    width: 84px; height:84px;
-    border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    font-size: 40px;
-    margin: 6px auto 18px;
-  }
-  .totem-purple-icon{ background: var(--purple-soft); }
-  .totem-teal-icon{ background: var(--teal-soft); }
-
-  .modal h3{
-    font-family:'Kalam', cursive;
-    font-size: 21px;
-    margin: 0 0 10px;
-  }
-
-  .modal p{
-    font-size: 14px;
-    line-height:1.6;
-    color:#57545e;
-    margin: 0 0 22px;
-  }
-
-  .modal button.confirm{
-    border:none;
-    color:#fff;
-    font-family:'Poppins',sans-serif;
-    font-weight:600;
-    font-size: 14px;
-    padding: 12px 26px;
-    border-radius: 999px;
-    cursor:pointer;
-    transition: transform 0.15s ease, opacity 0.15s ease;
-  }
-  .modal button.confirm:hover{ transform: translateY(-2px); }
-  .btn-purple{ background: var(--purple); }
-  .btn-teal{ background: var(--teal); }
-
-  .modal .close-x{
-    position:absolute; top:12px; right:14px;
-    border:none; background:none;
-    font-size: 18px; color:#b6b3bb;
-    cursor:pointer;
-  }
-
-  /* ---------- WIN ---------- */
-  .confetti-msg{
-    position: fixed;
-    left:50%; top: 26px;
-    transform: translateX(-50%) translateY(-40px);
-    background: var(--ink);
-    color:#fff;
-    font-family:'Kalam', cursive;
-    font-size:15px;
-    padding: 12px 22px;
-    border-radius: 10px;
-    z-index: 60;
-    opacity:0;
-    transition: all 0.35s ease;
-    white-space:nowrap;
-  }
-  .confetti-msg.show{
-    opacity:1;
-    transform: translateX(-50%) translateY(0);
-  }
+  #trilhaScreen .confetti-msg.show{ opacity:1; transform: translateX(-50%) translateY(0); }
 
   @media (max-width: 720px){
-    .page{
-      height: auto;
-      min-height: 100vh;
-      padding: 24px 16px 40px;
-    }
-    .totem{ flex: none; }
-    .track-wrap{ min-height: 220px; height: 220px; }
-    .badge{ font-size:11px; padding:9px 10px; }
-    .node{ width:34px; height:34px; }
-    .node .stone{ font-size:13px; }
-    .piece{ width:42px; height:42px; font-size:12px; }
+    #trilhaScreen .page{ min-height: 100vh; padding: 24px 16px 40px; }
+    #trilhaScreen .totem{ flex: none; }
+    #trilhaScreen .track-wrap{ min-height: 220px; height: 220px; }
+    #trilhaScreen .badge{ font-size:11px; padding:9px 10px; }
+    #trilhaScreen .node{ width:34px; height:34px; }
+    #trilhaScreen .node .stone{ font-size:13px; }
+    #trilhaScreen .piece{ width:42px; height:42px; font-size:12px; }
   }
 </style>
 </head>
 <body>
 
-<div class="page">
-  <header class="hero">
-    <h1><span>Jogo</span>: Operação R.A.D.A.R.</h1>
-    <p>Jogue o dado físico e arraste o totem da sua dupla até a casa correspondente ao número sorteado. Cada casa revela uma ação diferente.</p>
-  </header>
-
-  <section class="totem" data-color="purple" id="totem-0">
-    <div class="totem-title">
-      <span class="dot" style="background:var(--purple)"></span>
-      <h2>Primeira Dupla:</h2>
-      <span class="progress-text" id="progress-0">0 / 0 reveladas</span>
+<!-- ============================================================
+     HOME
+     ============================================================ -->
+<div class="view active" id="homeScreen">
+  <div class="home-wrap">
+    <header class="home-hero">
+      <span class="home-eyebrow">Dinâmica de turma</span>
+      <h1>Central de <span>Missões</span></h1>
+      <p class="home-sub">Duas formas de ativar a mesma dinâmica de conexão entre a turma. Escolha como a aula vai jogar hoje.</p>
+    </header>
+    <div class="home-cards">
+      <button class="home-card" id="openBaralho" style="--accent1:#8b7cf6; --accent2:#2dd4bf;">
+        <span class="hc-icon">🃏</span>
+        <span class="hc-meta">8 categorias · 80 cartas</span>
+        <span class="hc-title">Baralho de Conexões</span>
+        <span class="hc-desc">Cada dupla escolhe uma categoria e vira as cartas na tela para responder na hora.</span>
+        <span class="hc-btn">Abrir baralho →</span>
+      </button>
+      <button class="home-card" id="openTrilha" style="--accent1:#6c4ab6; --accent2:#1f978d;">
+        <span class="hc-icon">🎯</span>
+        <span class="hc-meta">Dado físico · trilha em dupla</span>
+        <span class="hc-title">Operação R.A.D.A.R.</span>
+        <span class="hc-desc">Jogue o dado físico e arraste o totem da sua dupla até a casa sorteada.</span>
+        <span class="hc-btn">Abrir trilha →</span>
+      </button>
     </div>
-    <div class="track-wrap" id="track-0">
-      <svg><path id="path-0"></path></svg>
-      <div class="badge start">PONTO<br>DE PARTIDA</div>
-      <div class="badge end" id="end-badge-0">MISSÃO<br>CUMPRIDA!</div>
-    </div>
-  </section>
-
-  <section class="totem" data-color="teal" id="totem-1">
-    <div class="totem-title">
-      <span class="dot" style="background:var(--teal)"></span>
-      <h2>Segunda Dupla:</h2>
-      <span class="progress-text" id="progress-1">0 / 0 reveladas</span>
-    </div>
-    <div class="track-wrap" id="track-1">
-      <svg><path id="path-1"></path></svg>
-      <div class="badge start">PONTO<br>DE PARTIDA</div>
-      <div class="badge end" id="end-badge-1">MISSÃO<br>CUMPRIDA!</div>
-    </div>
-  </section>
-</div>
-
-<div class="overlay" id="overlay">
-  <div class="modal">
-    <button class="close-x" id="closeModal">✕</button>
-    <div class="step-tag" id="modalTag">Passo 1</div>
-    <div class="icon-circle" id="modalIconWrap"><span id="modalIcon">🔥</span></div>
-    <h3 id="modalTitle">Título da ação</h3>
-    <p id="modalDesc">Descrição da ação a ser realizada.</p>
-    <button class="confirm" id="modalConfirm">Marcar como feito</button>
   </div>
 </div>
 
-<div class="confetti-msg" id="winMsg"></div>
+<!-- ============================================================
+     BARALHO DE CONEXÕES
+     ============================================================ -->
+<div class="view" id="baralhoScreen">
+  <button class="back-btn" onclick="goHome()">← Início</button>
+  <div class="wrap">
 
+    <header class="top">
+      <div>
+        <p class="brand-eyebrow">Jogo “Operação R.A.D.A.R.”</p>
+        <h1>Categorias de <span>Descobertas</span></h1>
+      </div>
+      <div class="overview">
+        <div><span class="num" id="overviewNum">0/80</span></div>
+        <div class="lbl">cartas reveladas</div>
+        <div class="overview-bar"><i id="overviewBar" style="width:0%"></i></div>
+      </div>
+    </header>
+
+    <nav class="tabs" id="tabs"></nav>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title-row">
+          <div class="cat-ic" id="panelIcon"></div>
+          <div>
+            <p class="panel-title" id="panelTitle"></p>
+            <p class="panel-sub" id="panelSub"></p>
+          </div>
+        </div>
+        <div class="progress-pill" id="panelProgress"></div>
+      </div>
+
+      <div class="deck" id="deck"></div>
+
+      <div class="panel-foot">
+        <button class="ghost-btn" id="resetCatBtn">Virar de volta esta categoria</button>
+        <button class="ghost-btn" id="resetAllBtn">Reiniciar tudo</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ============================================================
+     TRILHA DA MISSÃO
+     ============================================================ -->
+<div class="view" id="trilhaScreen">
+  <button class="back-btn" onclick="goHome()">← Início</button>
+
+  <div class="page">
+    <header class="hero">
+      <h1><span>Jogo</span>: Operação R.A.D.A.R.</h1>
+      <p>Jogue o dado físico e arraste o totem da sua dupla até a casa correspondente ao número sorteado. Cada casa revela uma ação diferente.</p>
+    </header>
+
+    <section class="totem" data-color="purple" id="totem-0">
+      <div class="totem-title">
+        <span class="dot" style="background:var(--purple)"></span>
+        <h2>Primeira Dupla:</h2>
+        <span class="progress-text" id="progress-0">0 / 0 reveladas</span>
+      </div>
+      <div class="track-wrap" id="track-0">
+        <svg><path id="path-0"></path></svg>
+        <div class="badge start">PONTO<br>DE PARTIDA</div>
+        <div class="badge end" id="end-badge-0">MISSÃO<br>CUMPRIDA!</div>
+      </div>
+    </section>
+
+    <section class="totem" data-color="teal" id="totem-1">
+      <div class="totem-title">
+        <span class="dot" style="background:var(--teal)"></span>
+        <h2>Segunda Dupla:</h2>
+        <span class="progress-text" id="progress-1">0 / 0 reveladas</span>
+      </div>
+      <div class="track-wrap" id="track-1">
+        <svg><path id="path-1"></path></svg>
+        <div class="badge start">PONTO<br>DE PARTIDA</div>
+        <div class="badge end" id="end-badge-1">MISSÃO<br>CUMPRIDA!</div>
+      </div>
+    </section>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <button class="close-x" id="closeModal">✕</button>
+      <div class="step-tag" id="modalTag">Passo 1</div>
+      <div class="icon-circle" id="modalIconWrap"><span id="modalIcon">🔥</span></div>
+      <h3 id="modalTitle">Título da ação</h3>
+      <p id="modalDesc">Descrição da ação a ser realizada.</p>
+      <button class="confirm" id="modalConfirm">Marcar como feito</button>
+    </div>
+  </div>
+
+  <div class="confetti-msg" id="winMsg"></div>
+</div>
+
+<!-- ============================================================
+     SCRIPT: BARALHO DE CONEXÕES
+     ============================================================ -->
 <script>
-/* =========================================================
-   EDITE AQUI OS PASSOS DE CADA TOTEM
-   icon: um emoji (ou troque por <img> se preferir imagens)
-   title: título curto exibido na pedra e no modal
-   desc: instrução detalhada da ação
-   ========================================================= */
+(function(){
+
+  const CATEGORIES = [
+    {
+      id: 'sinais', name: 'Sinais', icon: '📡', color: '#8b7cf6',
+      subtitle: 'Interesses, gostos e curiosidades.',
+      cards: [
+        'Um filme que você recomendaria.',
+        'Uma música que representa algo importante para você.',
+        'Um personagem que você admira.',
+        'Um jogo que considera criativo.',
+        'Um canal ou criador que acompanha.',
+        'Uma história que te marcou.',
+        'Uma habilidade que gostaria de aprender.',
+        'Algo que desperta sua curiosidade.',
+        'Um hobby que gostaria de experimentar.',
+        'Um assunto que gosta de conversar.'
+      ]
+    },
+    {
+      id: 'experiencias', name: 'Experiências', icon: '🌍', color: '#2dd4bf',
+      subtitle: 'Lugares, culturas e vivências.',
+      cards: [
+        'Um país que gostaria de visitar.',
+        'Um lugar do Brasil que deseja conhecer.',
+        'Um lugar onde moraria por um ano.',
+        'Uma cultura que desperta sua curiosidade.',
+        'Um lugar que recomendaria.',
+        'Se pudesse viajar amanhã, para onde iria?',
+        'Um ambiente natural que gostaria de explorar.',
+        'Um lugar fictício que gostaria de visitar.',
+        'Um local histórico que gostaria de conhecer.',
+        'Uma cidade que combina com você.'
+      ]
+    },
+    {
+      id: 'sonhos', name: 'Sonhos', icon: '✨', color: '#fbbf24',
+      subtitle: 'Projetos, metas e futuros possíveis.',
+      cards: [
+        'Uma profissão interessante.',
+        'Algo que gostaria de aprender.',
+        'Um projeto que gostaria de criar.',
+        'Uma meta importante.',
+        'Uma invenção que gostaria de desenvolver.',
+        'Um talento que gostaria de possuir.',
+        'Uma experiência que gostaria de viver.',
+        'Uma causa que gostaria de apoiar.',
+        'Um desafio que gostaria de superar.',
+        'Algo que deseja realizar antes da vida adulta.'
+      ]
+    },
+    {
+      id: 'historias', name: 'Histórias', icon: '📖', color: '#fb7185',
+      subtitle: 'Narrativas e experiências.',
+      cards: [
+        'Um momento engraçado.',
+        'Uma situação surpreendente.',
+        'Algo que te ensinou uma lição.',
+        'Um dia inesquecível.',
+        'Uma aventura que gostaria de viver.',
+        'Uma história que gosta de contar.',
+        'Uma lembrança da infância.',
+        'Um desafio que já enfrentou.',
+        'Algo que mudou sua forma de pensar.',
+        'Uma história que mereceria virar filme.'
+      ]
+    },
+    {
+      id: 'conexoes', name: 'Conexões', icon: '🤝', color: '#38bdf8',
+      subtitle: 'Descobertas sobre outras pessoas.',
+      cards: [
+        'Descubram algo em comum.',
+        'Descubram um sonho parecido.',
+        'Descubram um interesse parecido.',
+        'Descubram uma experiência parecida.',
+        'Descubram algo que gostariam de aprender.',
+        'Descubram algo que ambos recomendariam.',
+        'Descubram algo surpreendente.',
+        'Descubram uma opinião compartilhada.',
+        'Descubram uma curiosidade um sobre o outro.',
+        'Descubram uma habilidade que ambos admiram.'
+      ]
+    },
+    {
+      id: 'perguntas', name: 'Perguntas', icon: '❓', color: '#a3e635',
+      subtitle: 'A arte de perguntar.',
+      cards: [
+        'Criem uma pergunta interessante para outra dupla.',
+        'Façam uma pergunta para a instrutora.',
+        'Criem uma pergunta que não possa ser respondida com sim ou não.',
+        'Criem uma pergunta sobre sonhos.',
+        'Criem uma pergunta sobre viagens.',
+        'Criem uma pergunta sobre interesses.',
+        'Criem uma pergunta sobre criatividade.',
+        'Criem uma pergunta sobre futuro.',
+        'Criem uma pergunta que gere uma boa conversa.',
+        'Criem a melhor pergunta da missão.'
+      ]
+    },
+    {
+      id: 'ideias', name: 'Ideias', icon: '💡', color: '#fb923c',
+      subtitle: 'Imaginação e soluções.',
+      cards: [
+        'Uma ideia para melhorar a escola.',
+        'Uma ideia para melhorar a cidade.',
+        'Uma invenção simples que ajudaria pessoas.',
+        'Uma atividade que deveria existir para adolescentes.',
+        'Uma solução para um problema cotidiano.',
+        'Uma campanha que você criaria.',
+        'Uma ideia para aproximar pessoas.',
+        'Uma ideia para cuidar do planeta.',
+        'Uma ideia aparentemente maluca.',
+        'Uma ideia que gostaria de testar.'
+      ]
+    },
+    {
+      id: 'perspectivas', name: 'Perspectivas', icon: '🔭', color: '#e879f9',
+      subtitle: 'Significados e visões de mundo.',
+      cards: [
+        'O que significa sucesso?',
+        'O que significa coragem?',
+        'O que significa amizade?',
+        'O que significa liberdade?',
+        'O que significa criatividade?',
+        'O que significa aprender?',
+        'O que significa responsabilidade?',
+        'O que significa respeito?',
+        'O que significa felicidade?',
+        'O que significa fazer diferença no mundo?'
+      ]
+    }
+  ];
+
+  const revealed = {};
+  CATEGORIES.forEach(c => revealed[c.id] = new Set());
+
+  let currentCat = CATEGORIES[0].id;
+
+  const tabsEl = document.getElementById('tabs');
+  const panelIcon = document.getElementById('panelIcon');
+  const panelTitle = document.getElementById('panelTitle');
+  const panelSub = document.getElementById('panelSub');
+  const panelProgress = document.getElementById('panelProgress');
+  const deckEl = document.getElementById('deck');
+  const overviewNum = document.getElementById('overviewNum');
+  const overviewBar = document.getElementById('overviewBar');
+  const resetCatBtn = document.getElementById('resetCatBtn');
+  const resetAllBtn = document.getElementById('resetAllBtn');
+
+  function getCat(id){ return CATEGORIES.find(c => c.id === id); }
+
+  function buildTabs(){
+    tabsEl.innerHTML = '';
+    CATEGORIES.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'tab' + (cat.id === currentCat ? ' active' : '') + (revealed[cat.id].size === 10 ? ' done' : '');
+      btn.style.setProperty('--cat-color', cat.color);
+      btn.innerHTML = `<span class="ic">${cat.icon}</span><span class="name">${cat.name}</span><span class="count">${revealed[cat.id].size}/10</span>`;
+      btn.addEventListener('click', () => { currentCat = cat.id; renderAll(); });
+      tabsEl.appendChild(btn);
+    });
+  }
+
+  function buildDeck(){
+    const cat = getCat(currentCat);
+    deckEl.innerHTML = '';
+    cat.cards.forEach((text, i) => {
+      const isRevealed = revealed[cat.id].has(i);
+      const card = document.createElement('div');
+      card.className = 'card' + (isRevealed ? ' flipped revealed' : '');
+      card.style.setProperty('--cat-color', cat.color);
+      card.innerHTML = `
+        <div class="card-inner">
+          <div class="card-face card-front">
+            <span class="front-ic">${cat.icon}</span>
+            <span class="front-num">Carta ${i+1}</span>
+          </div>
+          <div class="card-face card-back">
+            <span class="back-num">${i+1}/10</span>
+            <span class="back-text">${text}</span>
+          </div>
+        </div>`;
+      card.addEventListener('click', () => {
+        revealed[cat.id].add(i);
+        card.classList.add('flipped', 'revealed');
+        renderTabsAndProgress();
+      });
+      deckEl.appendChild(card);
+    });
+  }
+
+  function renderTabsAndProgress(){
+    buildTabs();
+    const cat = getCat(currentCat);
+    const count = revealed[cat.id].size;
+    panelProgress.textContent = `${count} / 10 reveladas`;
+    panelProgress.style.color = cat.color;
+    panelProgress.style.border = `1px solid ${cat.color}`;
+    panelProgress.style.background = `color-mix(in srgb, ${cat.color} 10%, transparent)`;
+    renderOverview();
+  }
+
+  function renderPanel(){
+    const cat = getCat(currentCat);
+    panelIcon.textContent = cat.icon;
+    panelIcon.style.setProperty('--cat-color', cat.color);
+    panelTitle.textContent = cat.name;
+    panelSub.textContent = cat.subtitle;
+    buildDeck();
+    renderTabsAndProgress();
+  }
+
+  function renderOverview(){
+    let total = 0;
+    CATEGORIES.forEach(c => total += revealed[c.id].size);
+    const max = CATEGORIES.length * 10;
+    overviewNum.textContent = `${total}/${max}`;
+    overviewBar.style.width = (total/max*100) + '%';
+  }
+
+  function renderAll(){
+    buildTabs();
+    renderPanel();
+  }
+
+  resetCatBtn.addEventListener('click', () => {
+    const cat = getCat(currentCat);
+    if(revealed[cat.id].size === 0) return;
+    if(confirm(`Virar de volta todas as cartas de "${cat.name}"?`)){
+      revealed[cat.id] = new Set();
+      renderAll();
+    }
+  });
+
+  resetAllBtn.addEventListener('click', () => {
+    if(confirm('Reiniciar o baralho inteiro, todas as categorias?')){
+      CATEGORIES.forEach(c => revealed[c.id] = new Set());
+      renderAll();
+    }
+  });
+
+  renderAll();
+})();
+</script>
+
+<!-- ============================================================
+     SCRIPT: TRILHA DA MISSÃO
+     ============================================================ -->
+<script>
 const TOTEMS = [
   {
     color: 'purple',
@@ -483,26 +750,25 @@ const TOTEMS = [
   }
 ];
 
-const state = TOTEMS.map(t => ({
+const trilhaState = TOTEMS.map(t => ({
   completed: new Array(t.steps.length).fill(false),
-  currentStep: -1 // -1 = ainda no Ponto de Partida
+  currentStep: -1
 }));
-let activeModal = null; // {totemIndex, stepIndex}
-let nodePoints = []; // pontos calculados por totem, para posicionar peça e detectar drop
+let activeModal = null;
+let nodePoints = [];
 
 function buildTotem(totemIndex){
   const totem = TOTEMS[totemIndex];
   const track = document.getElementById('track-'+totemIndex);
   const n = totem.steps.length;
 
-  // remove old nodes/peça (mantém svg + badges)
   track.querySelectorAll('.node, .piece').forEach(el => el.remove());
 
   const rect = track.getBoundingClientRect();
   const trackH = rect.height || 140;
   const centerY = trackH / 2;
-  const amp = Math.min(trackH * 0.34, 60); // amplitude da onda, com limite
-  const marginX = 12; // % de margem para não colidir com os selos
+  const amp = Math.min(trackH * 0.34, 60);
+  const marginX = 12;
   const usableWidth = 100 - marginX*2;
 
   const points = [];
@@ -552,21 +818,19 @@ function drawPath(totemIndex, points, track){
     d += (i===0 ? `M ${x} ${y}` : ` L ${x} ${y}`);
   });
   path.setAttribute('d', d);
-  const color = TOTEMS[totemIndex].color === 'purple' ? getCss('--purple') : getCss('--teal');
+  const color = TOTEMS[totemIndex].color === 'purple' ? getTrilhaCss('--purple') : getTrilhaCss('--teal');
   path.setAttribute('stroke', color);
 }
 
-function getCss(varName){
-  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+function getTrilhaCss(varName){
+  return getComputedStyle(document.getElementById('trilhaScreen')).getPropertyValue(varName).trim();
 }
-
-/* ---------- PEÇA ARRASTÁVEL ---------- */
 
 function buildPiece(totemIndex, track, rect){
   const piece = document.createElement('div');
   piece.className = 'piece';
   piece.id = 'piece-'+totemIndex;
-  piece.textContent = totemIndex === 0 ? '👩‍🚀' : '👩‍🚀';
+  piece.textContent = '👩‍🚀';
   track.appendChild(piece);
   positionPieceAtStart(totemIndex, rect);
 
@@ -575,9 +839,8 @@ function buildPiece(totemIndex, track, rect){
 
 function positionPieceAtStart(totemIndex, rect){
   const piece = document.getElementById('piece-'+totemIndex);
-  const step = state[totemIndex].currentStep;
+  const step = trilhaState[totemIndex].currentStep;
   if(step === -1){
-    // fica sobre o selo de partida
     piece.style.left = '2%';
     piece.style.top = ((rect.height||140)/2) + 'px';
   } else {
@@ -659,24 +922,21 @@ function onDragEnd(e){
     const stepIndex = parseInt(closest.dataset.step, 10);
     landOnStep(totemIndex, stepIndex);
   } else {
-    // não soltou perto de nenhuma casa: volta pra posição atual
     const rect = track.getBoundingClientRect();
     positionPieceAtStart(totemIndex, rect);
   }
 }
 
 function landOnStep(totemIndex, stepIndex){
-  state[totemIndex].currentStep = stepIndex;
+  trilhaState[totemIndex].currentStep = stepIndex;
   const track = document.getElementById('track-'+totemIndex);
   const rect = track.getBoundingClientRect();
   positionPieceAtStart(totemIndex, rect);
-  openModal(totemIndex, stepIndex, state[totemIndex].completed[stepIndex]);
+  openModal(totemIndex, stepIndex, trilhaState[totemIndex].completed[stepIndex]);
 }
 
-/* ---------- ESTADOS DAS CASAS ---------- */
-
 function refreshNodeStates(totemIndex){
-  const comp = state[totemIndex].completed;
+  const comp = trilhaState[totemIndex].completed;
   const track = document.getElementById('track-'+totemIndex);
 
   track.querySelectorAll('.node').forEach(btn => {
@@ -707,12 +967,9 @@ function showWinMessage(name){
   setTimeout(()=> el.classList.remove('show'), 2600);
 }
 
-/* clique direto na casa: também move o totem pra lá (atalho sem arrastar) */
 function onNodeClick(totemIndex, stepIndex){
   landOnStep(totemIndex, stepIndex);
 }
-
-/* ---------- MODAL ---------- */
 
 function openModal(totemIndex, stepIndex, alreadyDone){
   activeModal = {totemIndex, stepIndex};
@@ -735,31 +992,63 @@ function openModal(totemIndex, stepIndex, alreadyDone){
   document.getElementById('overlay').classList.add('open');
 }
 
-function closeModal(){
+function closeTrilhaModal(){
   document.getElementById('overlay').classList.remove('open');
   activeModal = null;
 }
 
-document.getElementById('closeModal').addEventListener('click', closeModal);
+document.getElementById('closeModal').addEventListener('click', closeTrilhaModal);
 document.getElementById('overlay').addEventListener('click', (e) => {
-  if(e.target.id === 'overlay') closeModal();
+  if(e.target.id === 'overlay') closeTrilhaModal();
 });
 
 document.getElementById('modalConfirm').addEventListener('click', () => {
   if(!activeModal) return;
   const {totemIndex, stepIndex} = activeModal;
-  state[totemIndex].completed[stepIndex] = true;
+  trilhaState[totemIndex].completed[stepIndex] = true;
   refreshNodeStates(totemIndex);
-  closeModal();
+  closeTrilhaModal();
 });
 
-function init(){
-  TOTEMS.forEach((_, i) => buildTotem(i));
-}
-window.addEventListener('load', init);
 window.addEventListener('resize', () => {
-  TOTEMS.forEach((_, i) => buildTotem(i));
+  if(document.getElementById('trilhaScreen').classList.contains('active')){
+    TOTEMS.forEach((_, i) => buildTotem(i));
+  }
 });
 </script>
+
+<!-- ============================================================
+     SCRIPT: NAVEGAÇÃO ENTRE TELAS
+     ============================================================ -->
+<script>
+  let trilhaBuilt = false;
+
+  function showView(id){
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  function goHome(){ showView('homeScreen'); }
+
+  document.getElementById('openBaralho').addEventListener('click', () => {
+    showView('baralhoScreen');
+  });
+
+  document.getElementById('openTrilha').addEventListener('click', () => {
+    showView('trilhaScreen');
+    // (re)constrói a trilha agora que o contêiner está visível e com tamanho real
+    TOTEMS.forEach((_, i) => buildTotem(i));
+    trilhaBuilt = true;
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape'){
+      if(document.getElementById('trilhaScreen').classList.contains('active')) goHome();
+      else if(document.getElementById('baralhoScreen').classList.contains('active')) goHome();
+    }
+  });
+</script>
+
 </body>
 </html>
