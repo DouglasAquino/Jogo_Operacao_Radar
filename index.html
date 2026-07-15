@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Central de Missões</title>
+<title>Operação RADAR: Captando Sinais</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -322,9 +322,9 @@
 <div class="view active" id="homeScreen">
   <div class="home-wrap">
     <header class="home-hero">
-      <span class="home-eyebrow">Dinâmica de turma</span>
-      <h1>Central de <span>Missões</span></h1>
-      <p class="home-sub">Duas formas de ativar a mesma dinâmica de conexão entre a turma. Escolha como a aula vai jogar hoje.</p>
+      <span class="home-eyebrow">Planeta da Inteligência Comunicacional</span>
+      <h1>Operação RADAR: <span>Captando Sinais</span></h1>
+      <p class="home-sub">Objetivo: descobrir informações sobre pessoas, ideias e experiências por meio de desafios comunicacionais.</p>
     </header>
     <div class="home-cards">
       <button class="home-card" id="openBaralho" style="--accent1:#8b7cf6; --accent2:#2dd4bf;">
@@ -349,13 +349,13 @@
      BARALHO DE CONEXÕES
      ============================================================ -->
 <div class="view" id="baralhoScreen">
-  <button class="back-btn" onclick="goHome()">← Início</button>
+  <button class="back-btn" onclick="goToGame()">🎯 Mapa do Jogo</button>
   <div class="wrap">
 
     <header class="top">
       <div>
-        <p class="brand-eyebrow">Jogo “Operação R.A.D.A.R.”</p>
-        <h1>Categorias de <span>Descobertas</span></h1>
+        <p class="brand-eyebrow">Categorias de Descobertas</p>
+        <h1>Baralho de <span>Conexões</span></h1>
       </div>
       <div class="overview">
         <div><span class="num" id="overviewNum">0/80</span></div>
@@ -393,11 +393,11 @@
      TRILHA DA MISSÃO
      ============================================================ -->
 <div class="view" id="trilhaScreen">
-  <button class="back-btn" onclick="goHome()">← Início</button>
+  <button class="back-btn" onclick="showView('baralhoScreen')">🃏 Baralho</button>
 
   <div class="page">
     <header class="hero">
-      <h1><span>Jogo</span>: Operação R.A.D.A.R.</h1>
+      <h1><span>Mapa</span>: Operação R.A.D.A.R.</h1>
       <p>Jogue o dado físico e arraste o totem da sua dupla até a casa correspondente ao número sorteado. Cada casa revela uma ação diferente.</p>
     </header>
 
@@ -450,7 +450,7 @@
 
   const CATEGORIES = [
     {
-      id: 'sinais', name: 'Sinais', icon: '📡', color: '#8b7cf6',
+      id: 'sinais', name: 'Sinais', icon: '🛎️', color: '#8b7cf6',
       subtitle: 'Interesses, gostos e curiosidades.',
       cards: [
         'Um filme que você recomendaria.',
@@ -466,7 +466,7 @@
       ]
     },
     {
-      id: 'experiencias', name: 'Experiências', icon: '🌍', color: '#2dd4bf',
+      id: 'experiencias', name: 'Experiências', icon: '📸', color: '#2dd4bf',
       subtitle: 'Lugares, culturas e vivências.',
       cards: [
         'Um país que gostaria de visitar.',
@@ -482,7 +482,7 @@
       ]
     },
     {
-      id: 'sonhos', name: 'Sonhos', icon: '✨', color: '#fbbf24',
+      id: 'sonhos', name: 'Sonhos', icon: '💭', color: '#fbbf24',
       subtitle: 'Projetos, metas e futuros possíveis.',
       cards: [
         'Uma profissão interessante.',
@@ -562,7 +562,7 @@
       ]
     },
     {
-      id: 'perspectivas', name: 'Perspectivas', icon: '🔭', color: '#e879f9',
+      id: 'perspectivas', name: 'Perspectivas', icon: '👁️', color: '#e879f9',
       subtitle: 'Significados e visões de mundo.',
       cards: [
         'O que significa sucesso?',
@@ -1048,6 +1048,12 @@ window.addEventListener('resize', () => {
       else if(document.getElementById('baralhoScreen').classList.contains('active')) goHome();
     }
   });
+  function goToGame(){
+    showView('trilhaScreen');
+
+    TOTEMS.forEach((_, i) => buildTotem(i));
+    trilhaBuilt = true;
+}
 </script>
 
 </body>
