@@ -1,0 +1,329 @@
+/* =============================================================
+   DESIGN TOKENS
+   Cores, fontes e valores compartilhados por toda a aplicação.
+   ============================================================= */
+:root{
+  /* cores neutras */
+  --bg: #f6f4ef;
+  --paper: #fffdf9;
+  --paper-2: #eeebe2;
+  --line: #ddd8cb;
+  --ink: #17161c;
+  --muted: #5c5a63;
+  --faint: #a29c8c;
+
+  /* cores de marca */
+  --purple: #6c4ab6;
+  --purple-soft: #efe9fb;
+  --teal: #1f978d;
+  --teal-soft: #e6f5f3;
+  --accent-1: #8b7cf6; /* acento do Baralho */
+  --accent-2: #2dd4bf; /* acento do Baralho */
+
+  /* tipografia */
+  --font-display: 'Kalam', cursive;   /* títulos, rótulos e elementos lúdicos */
+  --font-body: 'Poppins', sans-serif; /* parágrafos e textos corridos */
+
+  /* superfícies */
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --shadow-soft: 0 4px 14px rgba(0,0,0,.07);
+}
+
+*{ box-sizing: border-box; }
+html, body{ margin:0; padding:0; }
+
+body{
+  background-color: var(--bg);
+  background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.05) 1px, transparent 0);
+  background-size: 26px 26px;
+  color: var(--ink);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+/* =============================================================
+   TROCA DE TELAS
+   ============================================================= */
+.view{ display:none; }
+.view.active{ display:block; }
+
+.back-btn{
+  position: fixed; top:16px; left:16px; z-index:80;
+  display:inline-flex; align-items:center; gap:6px;
+  background: var(--paper); border:1px solid var(--line); color: var(--muted);
+  font-family: var(--font-display); font-weight:600; font-size:12.5px;
+  padding:9px 14px; border-radius: var(--radius-sm); cursor:pointer;
+  transition: all .15s ease;
+  box-shadow: var(--shadow-soft);
+}
+.back-btn:hover{ border-color:#8b8894; color: var(--ink); transform: translateY(-1px); }
+
+/* =============================================================
+   TELA INICIAL
+   ============================================================= */
+.home-wrap{ max-width: 920px; margin: 0 auto; padding: 9vh 24px 60px; }
+
+.home-eyebrow{
+  display:block; text-align:center; font-family: var(--font-display);
+  color: var(--purple); text-transform: uppercase; letter-spacing:.14em; font-size:13px;
+  margin-bottom:10px;
+}
+.home-hero h1{
+  font-family: var(--font-display); font-weight:700; text-align:center;
+  font-size: clamp(28px, 5vw, 46px); margin:0 0 12px; line-height:1.1;
+}
+.home-hero h1 span{ color: var(--teal); }
+.home-sub{
+  text-align:center; color: var(--muted); max-width:520px; margin:0 auto 52px;
+  font-size:14px; line-height:1.65;
+}
+
+.home-cards{ display:grid; grid-template-columns: 1fr 1fr; gap:22px; }
+@media (max-width: 680px){ .home-cards{ grid-template-columns: 1fr; } }
+
+.home-card{
+  text-align:left; cursor:pointer; border:1px solid var(--line); background: var(--paper);
+  border-radius: 20px; padding:30px 26px 26px; display:flex; flex-direction:column; gap:10px;
+  position:relative; overflow:hidden; font-family: var(--font-display);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.home-card::before{
+  content:''; position:absolute; top:0; left:0; right:0; height:5px;
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
+}
+.home-card.card-baralho{ --accent1: var(--accent-1); --accent2: var(--accent-2); }
+.home-card.card-trilha{ --accent1: var(--purple); --accent2: var(--teal); }
+.home-card:hover{ transform: translateY(-4px); box-shadow: 0 16px 34px rgba(0,0,0,.08); border-color: var(--accent1); }
+
+.hc-icon{ font-size:34px; line-height:1; }
+.hc-title{ font-family: var(--font-display); font-weight:700; font-size:22px; color: var(--ink); }
+.hc-desc{ font-size:13.5px; color: var(--muted); line-height:1.55; font-family: var(--font-body); }
+.hc-meta{
+  font-size:11.5px; color: var(--faint); font-family: var(--font-display); font-weight:600;
+  letter-spacing:.03em; text-transform: uppercase;
+}
+.hc-btn{ margin-top:12px; font-family: var(--font-display); font-weight:600; font-size:13px; color: var(--accent1); }
+
+/* =============================================================
+   BARALHO DE CONEXÕES
+   ============================================================= */
+#baralhoScreen{ padding: 28px 18px 60px; }
+#baralhoScreen .wrap{ max-width: 1440px; margin: 0 auto; }
+
+#baralhoScreen header.top{
+  display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between;
+  gap:16px; margin: 44px 0 26px;
+}
+#baralhoScreen .brand-eyebrow{
+  font-family: var(--font-display); font-size:12px; letter-spacing:.18em;
+  text-transform: uppercase; color: var(--faint); margin:0 0 6px;
+}
+#baralhoScreen h1{
+  font-family: var(--font-display); font-weight:700; font-size: clamp(26px,4vw,38px);
+  margin:0; line-height:1.05; color: var(--ink);
+}
+#baralhoScreen h1 span{ color: var(--accent-1); }
+
+#baralhoScreen .overview{ text-align:right; font-family: var(--font-display); }
+#baralhoScreen .overview .num{ font-size: 30px; font-weight:700; }
+#baralhoScreen .overview .lbl{ font-size: 11px; letter-spacing:.1em; text-transform: uppercase; color: var(--faint); }
+#baralhoScreen .overview-bar{ width:180px; height:6px; border-radius:4px; background: var(--line); overflow:hidden; margin-top:6px; margin-left:auto; }
+#baralhoScreen .overview-bar > i{ display:block; height:100%; background: linear-gradient(90deg, var(--accent-1), var(--accent-2)); transition: width .5s ease; }
+
+#baralhoScreen .tabs{ display:flex; flex-wrap:nowrap; gap:8px; margin-bottom: 22px; }
+#baralhoScreen .tab{
+  flex: 1 1 0; min-width: 0;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  background: var(--paper); border: 1px solid var(--line); color: var(--muted);
+  padding: 12px 8px; border-radius: var(--radius-md);
+  font-family: var(--font-display); font-weight:600; font-size:13px;
+  cursor:pointer; transition: all .18s ease; white-space:nowrap; overflow:hidden;
+}
+#baralhoScreen .tab span{ overflow:hidden; text-overflow:ellipsis; }
+#baralhoScreen .tab:hover{ border-color: var(--cat-color, #444); color: var(--ink); }
+#baralhoScreen .tab .ic{ font-size:16px; line-height:1; }
+#baralhoScreen .tab .count{ font-size:11px; color: var(--faint); font-family: var(--font-display); font-weight:600; }
+#baralhoScreen .tab.active{
+  background: color-mix(in srgb, var(--cat-color) 16%, var(--paper));
+  border-color: var(--cat-color); color: var(--ink);
+  box-shadow: 0 0 0 1px var(--cat-color) inset;
+}
+#baralhoScreen .tab.done .count::after{ content:" ✓"; color: var(--cat-color); }
+
+#baralhoScreen .panel{ background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 22px 22px 26px; }
+#baralhoScreen .panel-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom: 20px; }
+#baralhoScreen .panel-title-row{ display:flex; align-items:center; gap:10px; }
+#baralhoScreen .cat-ic{
+  width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center;
+  font-size:19px; background: color-mix(in srgb, var(--cat-color) 22%, transparent); border: 1px solid var(--cat-color);
+}
+#baralhoScreen .panel-title{ font-family: var(--font-display); font-weight:700; font-size:22px; margin:0; }
+#baralhoScreen .panel-sub{ color: var(--muted); font-size: 13.5px; margin:2px 0 0; font-family: var(--font-body); }
+#baralhoScreen .progress-pill{ font-family: var(--font-display); font-weight:600; font-size:12.5px; border-radius:999px; padding: 6px 12px; white-space:nowrap; }
+
+#baralhoScreen .deck{ display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; }
+@media (max-width: 460px){ #baralhoScreen .deck{ grid-template-columns: repeat(2, 1fr); } }
+
+#baralhoScreen .card{ perspective: 1000px; aspect-ratio: 3 / 4; cursor:pointer; }
+#baralhoScreen .card-inner{ position:relative; width:100%; height:100%; transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2,.8,.25,1); }
+#baralhoScreen .card.flipped .card-inner{ transform: rotateY(180deg); }
+#baralhoScreen .card-face{
+  position:absolute; inset:0; backface-visibility: hidden; border-radius:16px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; padding:12px; text-align:center;
+}
+#baralhoScreen .card-front{
+  background: repeating-linear-gradient(135deg, transparent 0 8px, rgba(0,0,0,.025) 8px 16px), var(--paper-2);
+  border: 1.5px solid var(--line); position:relative;
+}
+#baralhoScreen .card-front .front-ic{ font-size:22px; margin-bottom:8px; opacity:.9; }
+#baralhoScreen .card-front .front-num{ font-family: var(--font-display); font-weight:700; font-size:13px; color: var(--faint); }
+#baralhoScreen .card:hover .card-front{ border-color: var(--cat-color); }
+#baralhoScreen .card-back{
+  background: color-mix(in srgb, var(--cat-color) 20%, var(--paper-2));
+  border: 1.5px solid var(--cat-color); transform: rotateY(180deg);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cat-color) 14%, transparent) inset;
+}
+#baralhoScreen .card-back .back-text{ font-family: var(--font-display); font-weight:600; font-size:13.5px; line-height:1.32; color: var(--ink); }
+#baralhoScreen .card-back .back-num{ position:absolute; top:8px; left:10px; font-family: var(--font-display); font-weight:700; font-size:10px; color: var(--muted); }
+#baralhoScreen .card.revealed .card-front::after{
+  content:"✓"; position:absolute; top:8px; right:10px; width:16px; height:16px; border-radius:50%;
+  background: var(--cat-color); color: var(--ink); font-size:9px; display:flex; align-items:center; justify-content:center;
+  font-family: var(--font-display); font-weight:700;
+}
+
+#baralhoScreen .panel-foot{ display:flex; justify-content:flex-end; gap:10px; margin-top: 22px; }
+#baralhoScreen .ghost-btn{
+  font-family: var(--font-display); font-weight:600; font-size:12.5px;
+  color: var(--faint); background:transparent; border:1px solid var(--line);
+  border-radius: var(--radius-sm); padding:8px 12px; cursor:pointer; transition: all .15s ease;
+}
+#baralhoScreen .ghost-btn:hover{ color: var(--ink); border-color: var(--faint); }
+
+@media (max-width: 700px){
+  #baralhoScreen .tab{ padding: 10px 4px; gap:3px; }
+  #baralhoScreen .tab .ic{ font-size:15px; }
+  #baralhoScreen .tab .name{ display:none; }
+  #baralhoScreen .tab .count{ font-size:9.5px; }
+}
+@media (max-width: 560px){
+  #baralhoScreen .panel{ padding:16px 14px 20px; border-radius:18px; }
+  #baralhoScreen .overview{ text-align:left; }
+  #baralhoScreen .overview-bar{ margin-left:0; }
+  #baralhoScreen header.top{ flex-direction:column; align-items:flex-start; }
+}
+
+/* =============================================================
+   TRILHA DA MISSÃO / OPERAÇÃO R.A.D.A.R.
+   ============================================================= */
+#trilhaScreen .page{
+  box-sizing: border-box; max-width: 1280px; min-height: 100vh;
+  margin: 0 auto; padding: 3vh 24px 4vh;
+  display: flex; flex-direction: column;
+}
+
+#trilhaScreen header.hero{ text-align:center; margin: 40px 0 2vh; flex: 0 0 auto; }
+#trilhaScreen header.hero .eyebrow{
+  font-family: var(--font-display); font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--purple); display:inline-flex; align-items:center; gap:8px;
+}
+#trilhaScreen header.hero h1{ font-family: var(--font-display); font-weight:700; font-size: clamp(24px, 3.6vw, 40px); margin: 6px 0 8px; line-height:1.1; }
+#trilhaScreen header.hero h1 span{ position:relative; display:inline-block; }
+#trilhaScreen header.hero h1 span::after{
+  content:''; position:absolute; left:-4px; right:-4px; bottom:2px; height: 10px;
+  background: linear-gradient(90deg, var(--purple-soft), var(--teal-soft)); z-index:-1; transform: rotate(-1deg);
+}
+#trilhaScreen header.hero p{ max-width: 620px; margin: 0 auto; color: var(--muted); font-size: 13px; line-height:1.5; font-family: var(--font-body); }
+
+#trilhaScreen .totem{ position:relative; flex: 1 1 0; min-height: 220px; display:flex; flex-direction:column; padding: 1vh 10px 0; }
+#trilhaScreen .totem-title{ display:flex; align-items:center; gap: 10px; margin: 0 0 1.5vh 4px; flex: 0 0 auto; }
+#trilhaScreen .totem-title .dot{ width:12px; height:12px; border-radius:50%; }
+#trilhaScreen .totem-title h2{ font-family: var(--font-display); font-size: 22px; margin:0; }
+#trilhaScreen .totem-title .progress-text{ margin-left:auto; font-size: 13px; font-weight:600; color: var(--faint); font-family: var(--font-body); }
+
+#trilhaScreen .track-wrap{ position:relative; flex: 1 1 0; min-height: 140px; }
+#trilhaScreen .track-wrap svg{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+#trilhaScreen .track-wrap svg path{ fill:none; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 9 10; }
+
+#trilhaScreen .badge{
+  position:absolute; top:50%; transform: translateY(-50%) rotate(-2deg);
+  background: var(--ink); color: var(--paper); font-family: var(--font-display); font-weight:700; font-size: 14px;
+  line-height:1.25; text-align:center; padding: 12px 16px; border-radius: 4px; white-space: nowrap;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.15); z-index:3;
+}
+#trilhaScreen .badge.start{ left: -6px; }
+#trilhaScreen .badge.end{ right: -6px; }
+#trilhaScreen .badge.end.done{ background: var(--ink); animation: trilhaPop 0.5s ease; }
+#trilhaScreen .badge.end.done::before{ content:'✓ '; }
+
+@keyframes trilhaPop{
+  0%{ transform: translateY(-50%) rotate(-2deg) scale(0.7); }
+  60%{ transform: translateY(-50%) rotate(-2deg) scale(1.12); }
+  100%{ transform: translateY(-50%) rotate(-2deg) scale(1); }
+}
+
+#trilhaScreen .node{ position:absolute; width: 42px; height:42px; transform: translate(-50%,-50%); z-index:4; cursor:pointer; border:none; background:none; padding:0; }
+#trilhaScreen .node .stone{
+  width:100%; height:100%; border-radius: 50%; background: var(--paper); border: 2.5px solid var(--ink);
+  display:flex; align-items:center; justify-content:center; font-size: 16px; font-weight:700; font-family: var(--font-display);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.12); transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+}
+#trilhaScreen .node:hover .stone{ transform: scale(1.1); box-shadow: 3px 3px 0 rgba(0,0,0,0.18); }
+#trilhaScreen .node.done .stone{ color: var(--paper); }
+#trilhaScreen .totem[data-color="purple"] .node.done .stone{ background: var(--purple); border-color: var(--purple); }
+#trilhaScreen .totem[data-color="teal"] .node.done .stone{ background: var(--teal); border-color: var(--teal); }
+#trilhaScreen .node.drop-hover .stone{ transform: scale(1.22); box-shadow: 0 0 0 5px rgba(0,0,0,0.08); }
+
+#trilhaScreen .piece{
+  position:absolute; width: 52px; height:52px; transform: translate(-50%,-50%); border-radius:50%;
+  display:flex; align-items:center; justify-content:center; color: var(--paper); font-family: var(--font-display); font-weight:700; font-size:14px;
+  border:3px solid var(--paper); box-shadow: 0 4px 10px rgba(0,0,0,0.28); cursor: grab; z-index: 10;
+  touch-action: none; user-select: none; transition: left 0.35s ease, top 0.35s ease, transform 0.15s ease;
+}
+#trilhaScreen .piece.dragging{ cursor: grabbing; transition: none; transform: translate(-50%,-50%) scale(1.15); box-shadow: 0 8px 18px rgba(0,0,0,0.35); }
+#trilhaScreen .totem[data-color="purple"] .piece{ background: var(--purple); }
+#trilhaScreen .totem[data-color="teal"] .piece{ background: var(--teal); }
+
+#trilhaScreen .overlay{
+  position: fixed; inset:0; background: rgba(23,22,28,0.55); display:flex; align-items:center; justify-content:center;
+  padding: 20px; z-index: 50; opacity:0; pointer-events:none; transition: opacity 0.2s ease;
+}
+#trilhaScreen .overlay.open{ opacity:1; pointer-events:all; }
+#trilhaScreen .modal{
+  background: var(--paper); border-radius: 14px; max-width: 380px; width:100%; padding: 30px 26px 26px;
+  text-align:center; position:relative; transform: translateY(14px) scale(0.96); transition: transform 0.22s ease;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+}
+#trilhaScreen .overlay.open .modal{ transform: translateY(0) scale(1); }
+#trilhaScreen .modal .step-tag{ font-size:12px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color: var(--faint); margin-bottom: 6px; font-family: var(--font-body); }
+#trilhaScreen .modal .icon-circle{ width: 84px; height:84px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size: 40px; margin: 6px auto 18px; }
+#trilhaScreen .totem-purple-icon{ background: var(--purple-soft); }
+#trilhaScreen .totem-teal-icon{ background: var(--teal-soft); }
+#trilhaScreen .modal h3{ font-family: var(--font-display); font-size: 21px; margin: 0 0 10px; }
+#trilhaScreen .modal p{ font-size: 14px; line-height:1.6; color: var(--muted); margin: 0 0 22px; font-family: var(--font-body); }
+#trilhaScreen .modal button.confirm{
+  border:none; color: var(--paper); font-family: var(--font-body); font-weight:600; font-size: 14px;
+  padding: 12px 26px; border-radius: 999px; cursor:pointer; transition: transform 0.15s ease, opacity 0.15s ease;
+}
+#trilhaScreen .modal button.confirm:hover{ transform: translateY(-2px); }
+#trilhaScreen .btn-purple{ background: var(--purple); }
+#trilhaScreen .btn-teal{ background: var(--teal); }
+#trilhaScreen .modal .close-x{ position:absolute; top:12px; right:14px; border:none; background:none; font-size: 18px; color: var(--faint); cursor:pointer; }
+
+#trilhaScreen .confetti-msg{
+  position: fixed; left:50%; top: 26px; transform: translateX(-50%) translateY(-40px);
+  background: var(--ink); color: var(--paper); font-family: var(--font-display); font-size:15px;
+  padding: 12px 22px; border-radius: 10px; z-index: 60; opacity:0; transition: all 0.35s ease; white-space:nowrap;
+}
+#trilhaScreen .confetti-msg.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 720px){
+  #trilhaScreen .page{ min-height: 100vh; padding: 24px 16px 40px; }
+  #trilhaScreen .totem{ flex: none; }
+  #trilhaScreen .track-wrap{ min-height: 220px; height: 220px; }
+  #trilhaScreen .badge{ font-size:11px; padding:9px 10px; }
+  #trilhaScreen .node{ width:34px; height:34px; }
+  #trilhaScreen .node .stone{ font-size:13px; }
+  #trilhaScreen .piece{ width:42px; height:42px; font-size:12px; }
+}
